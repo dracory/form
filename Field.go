@@ -5,7 +5,7 @@ import (
 
 	"github.com/gouniverse/hb"
 	"github.com/gouniverse/uid"
-	"github.com/gouniverse/utils"
+
 	"github.com/samber/lo"
 )
 
@@ -405,11 +405,11 @@ func (field *Field) fieldTable(fileManagerURL string) *hb.Tag {
 
 	rows := hb.NewTbody()
 	for rowIndex, rowFields := range field.TableOptions.Rows {
-		tr := hb.NewTR().Data("row-index", utils.ToString(rowIndex))
+		tr := hb.NewTR().Data("row-index", strconv.Itoa(rowIndex))
 		if field.TableOptions.RowDeleteButton != nil {
 			deleteButton := field.TableOptions.RowDeleteButton.
 				Type(hb.TYPE_BUTTON).
-				Data("row-index", utils.ToString(rowIndex))
+				Data("row-index", strconv.Itoa(rowIndex))
 			td := hb.NewTH().Child(deleteButton)
 			tr.AddChild(td)
 		}
