@@ -3,6 +3,7 @@ module github.com/dracory/form
 go 1.23.0
 
 require (
+	github.com/dracory/uid v1.7.0
 	github.com/gouniverse/hb v1.87.0
 	github.com/samber/lo v1.51.0
 )
@@ -13,8 +14,7 @@ require (
 )
 
 require (
-	github.com/gouniverse/uid v1.5.0
-	github.com/spf13/cast v1.7.1
-	golang.org/x/net v0.41.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
+	github.com/spf13/cast v1.9.2
+	golang.org/x/net v0.43.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 )
