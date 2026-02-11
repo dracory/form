@@ -288,3 +288,403 @@ func TestFieldTextArea(t *testing.T) {
 		t.Fatal(`Expected: `, expected, ` but was: `, html)
 	}
 }
+
+func TestFieldReadonly(t *testing.T) {
+	field := Field{
+		ID:       "ID",
+		Name:     "NAME",
+		Value:    "VALUE",
+		Type:     FORM_FIELD_TYPE_STRING,
+		Readonly: true,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`readonly="readonly"`,
+		`background: #efefef;`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldReadonlySelect(t *testing.T) {
+	field := Field{
+		ID:       "ID",
+		Name:     "NAME",
+		Value:    "VALUE",
+		Type:     FORM_FIELD_TYPE_SELECT,
+		Readonly: true,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`disabled="disabled"`,
+		`name="NAME_Readonly"`,
+		`type="hidden"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldDisabled(t *testing.T) {
+	field := Field{
+		ID:       "ID",
+		Name:     "NAME",
+		Value:    "VALUE",
+		Type:     FORM_FIELD_TYPE_STRING,
+		Disabled: true,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`disabled="disabled"`,
+		`background: #efefef;`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldWithHelp(t *testing.T) {
+	field := Field{
+		ID:   "ID",
+		Name: "NAME",
+		Type: FORM_FIELD_TYPE_STRING,
+		Help: "This is help text",
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`class="text-info"`,
+		`This is help text`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldWithPlaceholder(t *testing.T) {
+	field := Field{
+		ID:          "ID",
+		Name:        "NAME",
+		Type:        FORM_FIELD_TYPE_STRING,
+		Placeholder: "Enter value",
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `placeholder="Enter value"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldInvisible(t *testing.T) {
+	field := Field{
+		ID:        "ID",
+		Name:      "NAME",
+		Type:      FORM_FIELD_TYPE_STRING,
+		Invisible: true,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `display:none;`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldRequired(t *testing.T) {
+	field := Field{
+		ID:       "ID",
+		Name:     "NAME",
+		Type:     FORM_FIELD_TYPE_STRING,
+		Required: true,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`<sup class="text-danger ms-1">*</sup>`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldEmail(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "test@example.com",
+		Type:  FORM_FIELD_TYPE_EMAIL,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `type="email"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldTel(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "+1234567890",
+		Type:  FORM_FIELD_TYPE_TEL,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `type="tel"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldUrl(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "https://example.com",
+		Type:  FORM_FIELD_TYPE_URL,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `type="url"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldColor(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "#ff0000",
+		Type:  FORM_FIELD_TYPE_COLOR,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `type="color"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldCheckbox(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "1",
+		Type:  FORM_FIELD_TYPE_CHECKBOX,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`type="checkbox"`,
+		`class="form-check-input"`,
+		`checked="checked"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldCheckboxUnchecked(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "0",
+		Type:  FORM_FIELD_TYPE_CHECKBOX,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	if strings.Contains(html, `checked="checked"`) {
+		t.Fatal(`Expected checkbox to not be checked, but was: `, html)
+	}
+}
+
+func TestFieldRadio(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "opt2",
+		Type:  FORM_FIELD_TYPE_RADIO,
+		Options: []FieldOption{
+			{Key: "opt1", Value: "Option 1"},
+			{Key: "opt2", Value: "Option 2"},
+		},
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`type="radio"`,
+		`class="form-check-input"`,
+		`class="form-check-label"`,
+		`Option 1`,
+		`Option 2`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldFile(t *testing.T) {
+	field := Field{
+		ID:   "ID",
+		Name: "NAME",
+		Type: FORM_FIELD_TYPE_FILE,
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`type="file"`,
+		`class="form-control"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldWithAttrs(t *testing.T) {
+	field := Field{
+		ID:   "ID",
+		Name: "NAME",
+		Type: FORM_FIELD_TYPE_STRING,
+		Attrs: map[string]string{
+			"data-custom": "value",
+			"aria-label":  "Custom label",
+		},
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`data-custom="value"`,
+		`aria-label="Custom label"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldSelectMultiple(t *testing.T) {
+	field := Field{
+		ID:       "ID",
+		Name:     "NAME",
+		Type:     FORM_FIELD_TYPE_SELECT,
+		Multiple: true,
+		Options: []FieldOption{
+			{Key: "a", Value: "A"},
+			{Key: "b", Value: "B"},
+		},
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expected := `multiple="multiple"`
+	if !strings.Contains(html, expected) {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFieldSelectWithOptionsF(t *testing.T) {
+	field := Field{
+		ID:   "ID",
+		Name: "NAME",
+		Type: FORM_FIELD_TYPE_SELECT,
+		OptionsF: func() []FieldOption {
+			return []FieldOption{
+				{Key: "dynamic1", Value: "Dynamic 1"},
+				{Key: "dynamic2", Value: "Dynamic 2"},
+			}
+		},
+	}
+
+	formGroup := field.BuildFormGroup("")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`<option value="dynamic1">Dynamic 1</option>`,
+		`<option value="dynamic2">Dynamic 2</option>`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFieldImageWithFileManagerURL(t *testing.T) {
+	field := Field{
+		ID:    "ID",
+		Name:  "NAME",
+		Value: "https://example.com/image.png",
+		Type:  FORM_FIELD_TYPE_IMAGE,
+	}
+
+	formGroup := field.BuildFormGroup("https://example.com/filemanager")
+	html := formGroup.ToHTML()
+
+	expecteds := []string{
+		`href="https://example.com/filemanager"`,
+		`target="_blank"`,
+		`Browse`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}

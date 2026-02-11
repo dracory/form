@@ -44,8 +44,10 @@ func TestFieldRepeater(t *testing.T) {
 
 	expecteds := []string{
 		`<div class="form-group mb-3">`,
-		`<input class="form-control" id="ID_1_0" name="REPEATER_NAME[FIELD_NAME_1][]" type="text" value="VALUE_1_02" />`,
-		`<input class="form-control" id="ID_2_1" name="REPEATER_NAME[FIELD_NAME_2][]" type="text" value="VALUE_2_02" />`,
+		`<input class="form-control" id="ID_1_0_0" name="REPEATER_NAME[FIELD_NAME_1][]" type="text" value="VALUE_1_01" />`,
+		`<input class="form-control" id="ID_2_0_1" name="REPEATER_NAME[FIELD_NAME_2][]" type="text" value="VALUE_2_01" />`,
+		`<input class="form-control" id="ID_1_1_0" name="REPEATER_NAME[FIELD_NAME_1][]" type="text" value="VALUE_1_02" />`,
+		`<input class="form-control" id="ID_2_1_1" name="REPEATER_NAME[FIELD_NAME_2][]" type="text" value="VALUE_2_02" />`,
 	}
 
 	for _, expected := range expecteds {

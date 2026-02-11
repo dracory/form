@@ -38,6 +38,76 @@ func TestForm(t *testing.T) {
 	}
 }
 
+func TestFormEmpty(t *testing.T) {
+	form := NewForm(FormOptions{})
+
+	html := form.Build().ToHTML()
+
+	expected := `<form method="POST"></form>`
+	if html != expected {
+		t.Fatal(`Expected: `, expected, ` but was: `, html)
+	}
+}
+
+func TestFormWithIDAndClass(t *testing.T) {
+	form := NewForm(FormOptions{
+		ID:        "myForm",
+		ClassName: "custom-class",
+	})
+
+	html := form.Build().ToHTML()
+
+	expecteds := []string{
+		`id="myForm"`,
+		`class="custom-class"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFormWithHtmx(t *testing.T) {
+	form := NewForm(FormOptions{
+		HxPost:   "/api/submit",
+		HxTarget: "#result",
+		HxSwap:   "innerHTML",
+	})
+
+	html := form.Build().ToHTML()
+
+	expecteds := []string{
+		`hx-post="/api/submit"`,
+		`hx-target="#result"`,
+		`hx-swap="innerHTML"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
+func TestFormWithActionURL(t *testing.T) {
+	form := NewForm(FormOptions{
+		ActionURL: "/submit",
+		Method:    "GET",
+	})
+
+	html := form.Build().ToHTML()
+
+	expecteds := []string{
+		`action="/submit"`,
+		`method="GET"`,
+	}
+	for _, expected := range expecteds {
+		if !strings.Contains(html, expected) {
+			t.Fatal(`Expected: `, expected, ` but was: `, html)
+		}
+	}
+}
+
 func TestFormWithRepeater(t *testing.T) {
 	form := NewForm(FormOptions{
 		Fields: []FieldInterface{
