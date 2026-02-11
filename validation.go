@@ -117,6 +117,58 @@ func ValidatorEmail() Validator {
 	return ValidatorPattern(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`, "must be a valid email address")
 }
 
+// ValidatorURL returns a validator that checks if a value is a valid URL.
+func ValidatorURL() Validator {
+	return ValidatorPattern(`^https?://[^\s/$.?#].[^\s]*$`, "must be a valid URL")
+}
+
+// ValidatorIP returns a validator that checks if a value is a valid IPv4 address.
+func ValidatorIP() Validator {
+	return ValidatorPattern(`^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$`, "must be a valid IP address")
+}
+
+// ValidatorUUID returns a validator that checks if a value is a valid UUID.
+func ValidatorUUID() Validator {
+	return ValidatorPattern(`^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`, "must be a valid UUID")
+}
+
+// ValidatorAlphaNumeric returns a validator that checks if a value contains only letters and numbers.
+func ValidatorAlphaNumeric() Validator {
+	return ValidatorPattern(`^[a-zA-Z0-9]+$`, "must contain only letters and numbers")
+}
+
+// ValidatorOneOf returns a validator that checks if a value is one of the allowed values.
+func ValidatorOneOf(allowed ...string) Validator {
+	return func(fieldName string, value string) *ValidationError {
+		if value == "" {
+			return nil
+		}
+		for _, a := range allowed {
+			if value == a {
+				return nil
+			}
+		}
+		return &ValidationError{
+			Field:   fieldName,
+			Message: fieldName + " must be one of the allowed values",
+		}
+	}
+}
+
+// ValidatorCustom returns a validator that uses a custom function.
+// The function receives the value and returns an error message if invalid, or empty string if valid.
+func ValidatorCustom(fn func(value string) string) Validator {
+	return func(fieldName string, value string) *ValidationError {
+		if msg := fn(value); msg != "" {
+			return &ValidationError{
+				Field:   fieldName,
+				Message: msg,
+			}
+		}
+		return nil
+	}
+}
+
 // Validate validates the given values against the form fields and their validators.
 // It returns a slice of ValidationError. An empty slice means validation passed.
 // Errors are also stored on the form for inline display when Build() is called.
