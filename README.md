@@ -10,6 +10,7 @@ For commercial use, please use my [contact page](https://lesichkov.co.uk/contact
 
 ## Form Field Types
 
+- blockeditor
 - date
 - datetime
 - image

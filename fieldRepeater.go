@@ -142,6 +142,14 @@ func (field *fieldRepeater) BuildFormGroup(fileManagerURL string) *hb.Tag {
 		field.repeaterRemoveUrl += `?`
 	}
 
+	if !strings.Contains(field.repeaterMoveUpUrl, "?") {
+		field.repeaterMoveUpUrl += `?`
+	}
+
+	if !strings.Contains(field.repeaterMoveDownUrl, "?") {
+		field.repeaterMoveDownUrl += `?`
+	}
+
 	repeaterFieldName := field.GetName()
 
 	fieldLabel := field.GetLabel()
@@ -170,11 +178,11 @@ func (field *fieldRepeater) BuildFormGroup(fileManagerURL string) *hb.Tag {
 
 	cards := hb.Wrap()
 
-	for index, mapKeyValue := range field.values {
-		children := lo.Map(field.fields, func(field FieldInterface, index int) hb.TagInterface {
+	for itemIndex, mapKeyValue := range field.values {
+		children := lo.Map(field.fields, func(field FieldInterface, fieldIndex int) hb.TagInterface {
 			clonedField := field.clone()
 
-			clonedField.SetID(clonedField.GetID() + `_` + cast.ToString(index))
+			clonedField.SetID(clonedField.GetID() + `_` + cast.ToString(itemIndex) + `_` + cast.ToString(fieldIndex))
 
 			fieldName := clonedField.GetName()
 			fieldRepeaterValue := lo.ValueOr(mapKeyValue, fieldName, "")
@@ -191,7 +199,7 @@ func (field *fieldRepeater) BuildFormGroup(fileManagerURL string) *hb.Tag {
 			Title("Delete").
 			Class("btn btn-sm btn-danger float-end").
 			HxInclude("#" + formID).
-			HxPost(field.repeaterRemoveUrl + `&repeatable_remove_index=` + cast.ToString(index)).
+			HxPost(field.repeaterRemoveUrl + `&repeatable_remove_index=` + cast.ToString(itemIndex)).
 			HxTarget("#" + formID).
 			HxTrigger("click")
 
@@ -200,7 +208,7 @@ func (field *fieldRepeater) BuildFormGroup(fileManagerURL string) *hb.Tag {
 			Title("Move Up").
 			Class("btn btn-sm btn-default").
 			HxInclude("#" + formID).
-			HxPost(field.repeaterMoveUpUrl + `&repeatable_move_up_index=` + cast.ToString(index)).
+			HxPost(field.repeaterMoveUpUrl + `&repeatable_move_up_index=` + cast.ToString(itemIndex)).
 			HxTarget("#" + formID).
 			HxTrigger("click")
 
@@ -209,7 +217,7 @@ func (field *fieldRepeater) BuildFormGroup(fileManagerURL string) *hb.Tag {
 			Title("Move Down").
 			Class("btn btn-sm btn-default").
 			HxInclude("#" + formID).
-			HxPost(field.repeaterMoveDownUrl + `&repeatable_move_down_index=` + cast.ToString(index)).
+			HxPost(field.repeaterMoveDownUrl + `&repeatable_move_down_index=` + cast.ToString(itemIndex)).
 			HxTarget("#" + formID).
 			HxTrigger("click")
 

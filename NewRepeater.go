@@ -5,7 +5,7 @@ func NewRepeater(opts RepeaterOptions) *fieldRepeater {
 		fieldHelp:           opts.Help,
 		fieldLabel:          opts.Label,
 		fieldName:           opts.Name,
-		fieldType:           form_FIELD_TYPE_REPEATER,
+		fieldType:           formFieldTypeRepeater,
 		fieldValue:          opts.Value,
 		fields:              opts.Fields,
 		values:              opts.Values,

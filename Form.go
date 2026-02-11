@@ -42,7 +42,7 @@ func (form *Form) Build() *hb.Tag {
 	tags := []hb.TagInterface{}
 
 	for _, field := range form.fields {
-		if field.GetType() == form_FIELD_TYPE_REPEATER {
+		if field.GetType() == formFieldTypeRepeater {
 			field.(*fieldRepeater).form = form
 		}
 		tags = append(tags, field.BuildFormGroup(form.fileManagerURL))
