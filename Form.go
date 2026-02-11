@@ -44,13 +44,18 @@ func (form *Form) SetFileManagerURL(url string) {
 	form.fileManagerURL = url
 }
 
+// formAware is an optional interface for fields that need a reference to their parent form.
+type formAware interface {
+	setForm(form *Form)
+}
+
 // Build renders the form and all its fields into an hb.Tag HTML element.
 func (form *Form) Build() *hb.Tag {
 	tags := []hb.TagInterface{}
 
 	for _, field := range form.fields {
-		if field.GetType() == formFieldTypeRepeater {
-			field.(*fieldRepeater).form = form
+		if fa, ok := field.(formAware); ok {
+			fa.setForm(form)
 		}
 		tags = append(tags, field.BuildFormGroup(form.fileManagerURL))
 	}

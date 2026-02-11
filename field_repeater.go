@@ -38,6 +38,11 @@ type fieldRepeater struct {
 // == INTERFACE ===============================================================
 
 var _ FieldInterface = (*fieldRepeater)(nil)
+var _ formAware = (*fieldRepeater)(nil)
+
+func (field *fieldRepeater) setForm(form *Form) {
+	field.form = form
+}
 
 // == IMPLEMENTATION OF FieldInterface ========================================
 
