@@ -2,6 +2,7 @@ package form
 
 import "github.com/dracory/hb"
 
+// FieldInterface defines the contract that all form field types must implement.
 type FieldInterface interface {
 	GetID() string
 	SetID(fieldID string)

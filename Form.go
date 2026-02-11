@@ -4,6 +4,7 @@ import (
 	"github.com/dracory/hb"
 )
 
+// Form represents an HTML form with fields, styling, and optional HTMX integration.
 type Form struct {
 	id             string
 	className      string
@@ -18,26 +19,32 @@ type Form struct {
 	hxSwap   string
 }
 
+// AddField appends a field to the form.
 func (form *Form) AddField(field FieldInterface) {
 	form.fields = append(form.fields, field)
 }
 
+// GetFields returns all fields in the form.
 func (form *Form) GetFields() []FieldInterface {
 	return form.fields
 }
 
+// SetFields replaces all fields in the form.
 func (form *Form) SetFields(fields []FieldInterface) {
 	form.fields = fields
 }
 
+// GetFileManagerURL returns the file manager URL used for image fields.
 func (form *Form) GetFileManagerURL() string {
 	return form.fileManagerURL
 }
 
+// SetFileManagerURL sets the file manager URL used for image fields.
 func (form *Form) SetFileManagerURL(url string) {
 	form.fileManagerURL = url
 }
 
+// Build renders the form and all its fields into an hb.Tag HTML element.
 func (form *Form) Build() *hb.Tag {
 	tags := []hb.TagInterface{}
 

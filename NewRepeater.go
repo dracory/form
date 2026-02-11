@@ -1,5 +1,6 @@
 package form
 
+// NewRepeater creates a new repeater field that allows adding and removing groups of fields.
 func NewRepeater(opts RepeaterOptions) *fieldRepeater {
 	return &fieldRepeater{
 		fieldHelp:           opts.Help,
@@ -16,6 +17,7 @@ func NewRepeater(opts RepeaterOptions) *fieldRepeater {
 	}
 }
 
+// RepeaterOptions configures a new repeater field instance.
 type RepeaterOptions struct {
 	Label               string
 	Type                string

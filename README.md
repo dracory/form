@@ -227,10 +227,11 @@ fieldRepeater := NewRepeater(RepeaterOptions{
 	RepeaterMoveDownUrl: "REPEATER_MOVE_DOWN_URL",
 	RepeaterRemoveUrl:   "REPEATER_REMOVE_URL",
 })
+```
 
 The form when posted will look like this:
 
-```post
+```
 // first repeater item
 REPEATER_NAME[FIELD_NAME_1][] = VALUE_1_01
 REPEATER_NAME[FIELD_NAME_2][] = VALUE_2_01

@@ -528,6 +528,8 @@ func (field *Field) fieldTextArea() *hb.Tag {
 		HTML(field.Value)
 }
 
+// BuildFormGroup builds the complete form group HTML element for this field,
+// including label, input, help text, and any required indicators.
 func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 	if field.IsRaw() {
 		return hb.NewHTML(field.Value)
@@ -586,6 +588,8 @@ func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 	return formGroup
 }
 
+// TrumbowygScript returns the JavaScript code to initialize the Trumbowyg WYSIWYG editor
+// for this field, using either the provided config option or a default configuration.
 func (field *Field) TrumbowygScript() string {
 	fieldConfig, found := lo.Find(field.Options, func(fieldOption FieldOption) bool {
 		return fieldOption.Key == "config"

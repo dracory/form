@@ -2,6 +2,7 @@ package form
 
 import "github.com/dracory/hb"
 
+// NewField creates a new Field with the given options.
 func NewField(opts FieldOptions) *Field {
 	return &Field{
 		ID:           opts.ID,
@@ -25,6 +26,7 @@ func NewField(opts FieldOptions) *Field {
 	}
 }
 
+// FieldOptions configures a new Field instance.
 type FieldOptions struct {
 	ID           string // automatic, if not assigned
 	Type         string

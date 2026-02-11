@@ -4,6 +4,7 @@ import (
 	"net/http"
 )
 
+// FormOptions configures a new Form instance.
 type FormOptions struct {
 	ActionURL      string           // optional
 	ClassName      string           // optional
@@ -19,6 +20,7 @@ type FormOptions struct {
 
 }
 
+// NewForm creates a new Form with the given options. Defaults to POST method if not specified.
 func NewForm(opts FormOptions) *Form {
 	form := &Form{}
 	form.fields = opts.Fields
