@@ -76,3 +76,10 @@ func (form *Form) WithErrors(errors map[string]string) *Form {
 	form.errors = errors
 	return form
 }
+
+// WithHTMX sets HTMX attributes on the form using a structured config.
+// This provides access to extended HTMX attributes beyond Post/Target/Swap.
+func (form *Form) WithHTMX(config HTMXConfig) *Form {
+	form.htmxConfig = &config
+	return form
+}

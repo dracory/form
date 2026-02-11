@@ -20,6 +20,8 @@ type Form struct {
 
 	theme  *Theme
 	errors map[string]string // field name -> error message
+
+	htmxConfig *HTMXConfig
 }
 
 // AddField appends a field to the form.
@@ -123,6 +125,46 @@ func (form *Form) Build() *hb.Tag {
 
 	if form.hxSwap != "" {
 		hbForm.HxSwap(hb.SwapMethod(form.hxSwap))
+	}
+
+	// Apply HTMXConfig if set (overrides individual hx* fields where non-empty)
+	if c := form.htmxConfig; c != nil {
+		if c.Post != "" {
+			hbForm.HxPost(c.Post)
+		}
+		if c.Get != "" {
+			hbForm.Attr("hx-get", c.Get)
+		}
+		if c.Target != "" {
+			hbForm.HxTarget(c.Target)
+		}
+		if c.Swap != "" {
+			hbForm.HxSwap(hb.SwapMethod(c.Swap))
+		}
+		if c.Trigger != "" {
+			hbForm.Attr("hx-trigger", c.Trigger)
+		}
+		if c.Indicator != "" {
+			hbForm.Attr("hx-indicator", c.Indicator)
+		}
+		if c.Confirm != "" {
+			hbForm.Attr("hx-confirm", c.Confirm)
+		}
+		if c.Sync != "" {
+			hbForm.Attr("hx-sync", c.Sync)
+		}
+		if c.Validate {
+			hbForm.Attr("hx-validate", "true")
+		}
+		if c.DisabledElt != "" {
+			hbForm.Attr("hx-disabled-elt", c.DisabledElt)
+		}
+		if c.Encoding != "" {
+			hbForm.Attr("hx-encoding", c.Encoding)
+		}
+		if c.PushURL != "" {
+			hbForm.Attr("hx-push-url", c.PushURL)
+		}
 	}
 
 	return hbForm
