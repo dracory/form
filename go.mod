@@ -1,6 +1,6 @@
 module github.com/dracory/form
 
-go 1.24.0
+go 1.25
 
 require (
 	github.com/dracory/hb v1.88.0
