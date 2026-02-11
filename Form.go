@@ -17,6 +17,8 @@ type Form struct {
 	hxPost   string
 	hxTarget string
 	hxSwap   string
+
+	theme *Theme
 }
 
 // AddField appends a field to the form.
@@ -49,13 +51,26 @@ type formAware interface {
 	setForm(form *Form)
 }
 
+// themeable is an optional interface for fields that support theming.
+type themeable interface {
+	setTheme(theme *Theme)
+}
+
 // Build renders the form and all its fields into an hb.Tag HTML element.
 func (form *Form) Build() *hb.Tag {
 	tags := []hb.TagInterface{}
 
+	theme := form.theme
+	if theme == nil {
+		theme = defaultTheme
+	}
+
 	for _, field := range form.fields {
 		if fa, ok := field.(formAware); ok {
 			fa.setForm(form)
+		}
+		if th, ok := field.(themeable); ok {
+			th.setTheme(theme)
 		}
 		tags = append(tags, field.BuildFormGroup(form.fileManagerURL))
 	}

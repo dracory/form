@@ -32,6 +32,21 @@ type Field struct {
 	Attrs       map[string]string
 	Multiple    bool
 	Validators  []Validator
+	theme       *Theme
+}
+
+var _ themeable = (*Field)(nil)
+
+func (field *Field) setTheme(theme *Theme) {
+	field.theme = theme
+}
+
+// getTheme returns the field's theme, falling back to the default Bootstrap 5 theme.
+func (field *Field) getTheme() *Theme {
+	if field.theme != nil {
+		return field.theme
+	}
+	return defaultTheme
 }
 
 // == INTERFACES ==============================================================
@@ -235,7 +250,7 @@ func (field *Field) fieldInput(fileManagerURL string) *hb.Tag {
 	case FORM_FIELD_TYPE_DATE, FORM_FIELD_TYPE_HIDDEN, FORM_FIELD_TYPE_PASSWORD, FORM_FIELD_TYPE_STRING, FORM_FIELD_TYPE_NUMBER, FORM_FIELD_TYPE_EMAIL, FORM_FIELD_TYPE_TEL, FORM_FIELD_TYPE_URL, FORM_FIELD_TYPE_COLOR:
 		input = hb.NewInput().
 			ID(field.ID).
-			Class("form-control").
+			Class(field.getTheme().InputClass).
 			Name(field.Name).
 			Value(field.Value)
 
@@ -316,7 +331,7 @@ func (field *Field) fieldInput(fileManagerURL string) *hb.Tag {
 func (field *Field) fieldBlockEditor() *hb.Tag {
 	textInputOnError := hb.NewTextArea().
 		ID(field.ID).
-		Class("form-control").
+		Class(field.getTheme().InputClass).
 		Name(field.Name).
 		Text(field.Value)
 
@@ -335,7 +350,7 @@ func (field *Field) fieldDateTime() *hb.Tag {
 	input := hb.NewInput().
 		ID(field.ID).
 		Type(hb.TYPE_DATETIME).
-		Class("form-control").
+		Class(field.getTheme().InputClass).
 		Name(field.Name).
 		Value(field.Value)
 	// formGroupInput = hb.NewTag(`el-date-picker`).Attr("type", "datetime").Attr("v-model", "entityModel."+fieldName)
@@ -355,7 +370,7 @@ func (field *Field) fieldImage(fileManagerURL string) *hb.Tag {
 	textArea := hb.NewTextArea().
 		ID(field.ID).
 		Type(hb.TYPE_TEXT).
-		Class("form-control").
+		Class(field.getTheme().InputClass).
 		Style(`height:70px;`).
 		Name(field.Name).
 		Text(field.Value).
@@ -383,7 +398,7 @@ func (field *Field) fieldImage(fileManagerURL string) *hb.Tag {
 func (field *Field) fieldHtmlArea() *hb.Tag {
 	textarea := hb.NewTextArea().
 		ID(field.ID).
-		Class("form-control").
+		Class(field.getTheme().TextAreaClass).
 		Name(field.Name).
 		Text(field.Value)
 
@@ -399,7 +414,7 @@ func (field *Field) fieldSelect() *hb.Tag {
 	input := hb.NewSelect().
 		ID(field.ID).
 		Name(field.Name).
-		Class("form-select")
+		Class(field.getTheme().SelectClass)
 
 	if field.Multiple {
 		input.Attr("multiple", "multiple")
@@ -453,7 +468,7 @@ func (field *Field) fieldTable(fileManagerURL string) *hb.Tag {
 	}
 	table := hb.NewTable().
 		ID(field.ID).
-		Class("table table-striped table-hover mb-0").
+		Class(field.getTheme().TableClass).
 		Child(header).
 		Child(rows)
 
@@ -467,12 +482,12 @@ func (field *Field) fieldTable(fileManagerURL string) *hb.Tag {
 }
 
 func (field *Field) fieldCheckbox() *hb.Tag {
-	wrapper := hb.NewDiv().Class("form-check")
+	wrapper := hb.NewDiv().Class(field.getTheme().CheckboxWrapClass)
 
 	input := hb.NewInput().
 		ID(field.ID).
 		Type(hb.TYPE_CHECKBOX).
-		Class("form-check-input").
+		Class(field.getTheme().CheckboxInputClass).
 		Name(field.Name).
 		Value(lo.If(field.Value != "", field.Value).Else("1"))
 
@@ -489,11 +504,11 @@ func (field *Field) fieldRadio() *hb.Tag {
 	wrapper := hb.NewDiv()
 
 	for _, opt := range field.Options {
-		radioDiv := hb.NewDiv().Class("form-check")
+		radioDiv := hb.NewDiv().Class(field.getTheme().RadioWrapClass)
 
 		radioInput := hb.NewInput().
 			Type(hb.TYPE_RADIO).
-			Class("form-check-input").
+			Class(field.getTheme().RadioInputClass).
 			Name(field.Name).
 			Value(opt.Key)
 
@@ -502,7 +517,7 @@ func (field *Field) fieldRadio() *hb.Tag {
 		}
 
 		radioLabel := hb.NewLabel().
-			Class("form-check-label").
+			Class(field.getTheme().RadioLabelClass).
 			HTML(opt.Value)
 
 		radioDiv.Child(radioInput).Child(radioLabel)
@@ -516,14 +531,14 @@ func (field *Field) fieldFile() *hb.Tag {
 	return hb.NewInput().
 		ID(field.ID).
 		Type(hb.TYPE_FILE).
-		Class("form-control").
+		Class(field.getTheme().FileInputClass).
 		Name(field.Name)
 }
 
 func (field *Field) fieldTextArea() *hb.Tag {
 	return hb.NewTextArea().
 		ID(field.ID).
-		Class("form-control").
+		Class(field.getTheme().TextAreaClass).
 		Name(field.Name).
 		HTML(field.Value)
 }
@@ -543,14 +558,14 @@ func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 	}
 
 	formGroup := hb.NewDiv().
-		Class("form-group mb-3")
+		Class(field.getTheme().FormGroupClass)
 
 	formGroupLabel := hb.NewLabel().
 		HTML(fieldLabel).
-		Class("form-label").
+		Class(field.getTheme().LabelClass).
 		ChildIf(
 			field.Required,
-			hb.NewSup().HTML("*").Class("text-danger ms-1"),
+			hb.NewSup().HTML(field.getTheme().RequiredMarker).Class(field.getTheme().RequiredClass),
 		)
 
 	// Hidden input
@@ -558,7 +573,7 @@ func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 
 	if field.IsReadonly() && field.IsSelect() {
 		hiddenInput = hb.NewInput().
-			Class("form-control").
+			Class(field.getTheme().InputClass).
 			Name(field.Name).
 			Value(field.Value).
 			Type(hb.TYPE_HIDDEN)
@@ -581,7 +596,7 @@ func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 
 	// Add help
 	if field.Help != "" {
-		formGroupHelp := hb.NewParagraph().Class("text-info").HTML(field.Help)
+		formGroupHelp := hb.NewParagraph().Class(field.getTheme().HelpClass).HTML(field.Help)
 		formGroup.Child(formGroupHelp)
 	}
 

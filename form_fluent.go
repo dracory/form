@@ -63,3 +63,9 @@ func (form *Form) WithHxSwap(swap string) *Form {
 	form.hxSwap = swap
 	return form
 }
+
+// WithTheme sets the theme used for rendering form fields.
+func (form *Form) WithTheme(theme *Theme) *Form {
+	form.theme = theme
+	return form
+}
