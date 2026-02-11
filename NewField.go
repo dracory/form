@@ -19,6 +19,7 @@ func NewField(opts FieldOptions) *Field {
 		Placeholder:  opts.Placeholder,
 		Invisible:    opts.Invisible,
 		CustomInput:  opts.CustomInput,
+		Attrs:        opts.Attrs,
 	}
 }
 
@@ -38,4 +39,5 @@ type FieldOptions struct {
 	Placeholder  string
 	Invisible    bool
 	CustomInput  hb.TagInterface
+	Attrs        map[string]string
 }

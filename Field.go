@@ -28,6 +28,7 @@ type Field struct {
 	Placeholder string
 	Invisible   bool
 	CustomInput hb.TagInterface
+	Attrs       map[string]string
 }
 
 // == INTERFACES ==============================================================
@@ -125,6 +126,14 @@ func (field *Field) IsBlockEditor() bool {
 	return field.Type == FORM_FIELD_TYPE_BLOCKEDITOR
 }
 
+func (field *Field) IsCheckbox() bool {
+	return field.Type == FORM_FIELD_TYPE_CHECKBOX
+}
+
+func (field *Field) IsColor() bool {
+	return field.Type == FORM_FIELD_TYPE_COLOR
+}
+
 func (field *Field) IsDate() bool {
 	return field.Type == FORM_FIELD_TYPE_DATE
 }
@@ -135,6 +144,14 @@ func (field *Field) IsDateTime() bool {
 
 func (field *Field) IsImage() bool {
 	return field.Type == FORM_FIELD_TYPE_IMAGE
+}
+
+func (field *Field) IsEmail() bool {
+	return field.Type == FORM_FIELD_TYPE_EMAIL
+}
+
+func (field *Field) IsFile() bool {
+	return field.Type == FORM_FIELD_TYPE_FILE
 }
 
 func (field *Field) IsHidden() bool {
@@ -153,6 +170,10 @@ func (field *Field) IsPassword() bool {
 	return field.Type == FORM_FIELD_TYPE_PASSWORD
 }
 
+func (field *Field) IsRadio() bool {
+	return field.Type == FORM_FIELD_TYPE_RADIO
+}
+
 func (field *Field) IsSelect() bool {
 	return field.Type == FORM_FIELD_TYPE_SELECT
 }
@@ -165,8 +186,16 @@ func (field *Field) IsTable() bool {
 	return field.Type == FORM_FIELD_TYPE_TABLE
 }
 
+func (field *Field) IsTel() bool {
+	return field.Type == FORM_FIELD_TYPE_TEL
+}
+
 func (field *Field) IsTextArea() bool {
 	return field.Type == FORM_FIELD_TYPE_TEXTAREA
+}
+
+func (field *Field) IsUrl() bool {
+	return field.Type == FORM_FIELD_TYPE_URL
 }
 
 func (field *Field) IsReadonly() bool {
@@ -196,12 +225,8 @@ func (field *Field) fieldInput(fileManagerURL string) *hb.Tag {
 
 	input := hb.NewTag(``) // no tag by default
 
-	if field.IsDate() ||
-		field.IsHidden() ||
-		field.IsPassword() ||
-		field.IsString() ||
-		field.IsNumber() {
-
+	switch field.Type {
+	case FORM_FIELD_TYPE_DATE, FORM_FIELD_TYPE_HIDDEN, FORM_FIELD_TYPE_PASSWORD, FORM_FIELD_TYPE_STRING, FORM_FIELD_TYPE_NUMBER, FORM_FIELD_TYPE_EMAIL, FORM_FIELD_TYPE_TEL, FORM_FIELD_TYPE_URL, FORM_FIELD_TYPE_COLOR:
 		input = hb.NewInput().
 			ID(field.ID).
 			Class("form-control").
@@ -212,53 +237,46 @@ func (field *Field) fieldInput(fileManagerURL string) *hb.Tag {
 			input.Placeholder(field.Placeholder)
 		}
 
-		if field.IsDate() {
+		switch field.Type {
+		case FORM_FIELD_TYPE_DATE:
 			input.Type(hb.TYPE_DATE)
-		}
-
-		if field.IsHidden() {
+		case FORM_FIELD_TYPE_HIDDEN:
 			input.Type(hb.TYPE_HIDDEN)
-		}
-
-		if field.IsNumber() {
+		case FORM_FIELD_TYPE_NUMBER:
 			input.Type(hb.TYPE_NUMBER)
-		}
-
-		if field.IsPassword() {
+		case FORM_FIELD_TYPE_PASSWORD:
 			input.Type(hb.TYPE_PASSWORD)
-		}
-
-		if field.IsString() {
+		case FORM_FIELD_TYPE_STRING:
 			input.Type(hb.TYPE_TEXT)
+		case FORM_FIELD_TYPE_EMAIL:
+			input.Type(hb.TYPE_EMAIL)
+		case FORM_FIELD_TYPE_TEL:
+			input.Type(hb.TYPE_TEL)
+		case FORM_FIELD_TYPE_URL:
+			input.Type(hb.TYPE_URL)
+		case FORM_FIELD_TYPE_COLOR:
+			input.Type(hb.TYPE_COLOR)
 		}
-	}
-
-	if field.IsDateTime() {
+	case FORM_FIELD_TYPE_DATETIME:
 		input = field.fieldDateTime()
-	}
-
-	if field.IsImage() {
+	case FORM_FIELD_TYPE_IMAGE:
 		input = field.fieldImage(fileManagerURL)
-	}
-
-	if field.IsHtmlArea() {
+	case FORM_FIELD_TYPE_HTMLAREA:
 		input = field.fieldHtmlArea()
-	}
-
-	if field.IsBlockEditor() {
+	case FORM_FIELD_TYPE_BLOCKEDITOR:
 		input = field.fieldBlockEditor()
-	}
-
-	if field.IsSelect() {
+	case FORM_FIELD_TYPE_SELECT:
 		input = field.fieldSelect()
-	}
-
-	if field.IsTable() {
+	case FORM_FIELD_TYPE_TABLE:
 		input = field.fieldTable(fileManagerURL)
-	}
-
-	if field.IsTextArea() {
+	case FORM_FIELD_TYPE_TEXTAREA:
 		input = field.fieldTextArea()
+	case FORM_FIELD_TYPE_CHECKBOX:
+		input = field.fieldCheckbox()
+	case FORM_FIELD_TYPE_RADIO:
+		input = field.fieldRadio()
+	case FORM_FIELD_TYPE_FILE:
+		input = field.fieldFile()
 	}
 
 	if field.IsReadonly() {
@@ -280,6 +298,10 @@ func (field *Field) fieldInput(fileManagerURL string) *hb.Tag {
 
 		// Apply slightly dimmed background
 		input.Style("background: #efefef;")
+	}
+
+	for k, v := range field.Attrs {
+		input.Attr(k, v)
 	}
 
 	return input
