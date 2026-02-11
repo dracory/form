@@ -18,7 +18,8 @@ type Form struct {
 	hxTarget string
 	hxSwap   string
 
-	theme *Theme
+	theme  *Theme
+	errors map[string]string // field name -> error message
 }
 
 // AddField appends a field to the form.
@@ -46,6 +47,17 @@ func (form *Form) SetFileManagerURL(url string) {
 	form.fileManagerURL = url
 }
 
+// SetErrors sets the validation error messages to display inline next to fields.
+// The map keys are field names, values are error messages.
+func (form *Form) SetErrors(errors map[string]string) {
+	form.errors = errors
+}
+
+// GetErrors returns the current validation error messages.
+func (form *Form) GetErrors() map[string]string {
+	return form.errors
+}
+
 // formAware is an optional interface for fields that need a reference to their parent form.
 type formAware interface {
 	setForm(form *Form)
@@ -54,6 +66,11 @@ type formAware interface {
 // themeable is an optional interface for fields that support theming.
 type themeable interface {
 	setTheme(theme *Theme)
+}
+
+// errorAware is an optional interface for fields that support inline error display.
+type errorAware interface {
+	setError(message string)
 }
 
 // Build renders the form and all its fields into an hb.Tag HTML element.
@@ -71,6 +88,11 @@ func (form *Form) Build() *hb.Tag {
 		}
 		if th, ok := field.(themeable); ok {
 			th.setTheme(theme)
+		}
+		if ea, ok := field.(errorAware); ok && form.errors != nil {
+			if msg, exists := form.errors[field.GetName()]; exists {
+				ea.setError(msg)
+			}
 		}
 		tags = append(tags, field.BuildFormGroup(form.fileManagerURL))
 	}

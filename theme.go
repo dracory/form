@@ -18,6 +18,8 @@ type Theme struct {
 	RequiredClass      string
 	RequiredMarker     string
 	TableClass         string
+	ErrorClass         string // CSS class for the error message element
+	ErrorInputClass    string // CSS class added to invalid inputs
 }
 
 // ThemeBootstrap5 returns the default Bootstrap 5 theme.
@@ -38,6 +40,8 @@ func ThemeBootstrap5() *Theme {
 		RequiredClass:      "text-danger ms-1",
 		RequiredMarker:     "*",
 		TableClass:         "table table-striped table-hover mb-0",
+		ErrorClass:         "invalid-feedback",
+		ErrorInputClass:    "is-invalid",
 	}
 }
 
@@ -59,6 +63,8 @@ func ThemeTailwind() *Theme {
 		RequiredClass:      "text-red-500 ml-1",
 		RequiredMarker:     "*",
 		TableClass:         "min-w-full divide-y divide-gray-200",
+		ErrorClass:         "mt-1 text-sm text-red-600",
+		ErrorInputClass:    "border-red-500",
 	}
 }
 

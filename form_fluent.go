@@ -69,3 +69,10 @@ func (form *Form) WithTheme(theme *Theme) *Form {
 	form.theme = theme
 	return form
 }
+
+// WithErrors sets validation error messages to display inline next to fields.
+// The map keys are field names, values are error messages.
+func (form *Form) WithErrors(errors map[string]string) *Form {
+	form.errors = errors
+	return form
+}

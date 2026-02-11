@@ -119,6 +119,7 @@ func ValidatorEmail() Validator {
 
 // Validate validates the given values against the form fields and their validators.
 // It returns a slice of ValidationError. An empty slice means validation passed.
+// Errors are also stored on the form for inline display when Build() is called.
 func (form *Form) Validate(values map[string]string) []ValidationError {
 	var errors []ValidationError
 
@@ -144,6 +145,15 @@ func (form *Form) Validate(values map[string]string) []ValidationError {
 			}
 		}
 	}
+
+	// Store errors for inline display
+	errorMap := make(map[string]string)
+	for _, e := range errors {
+		if _, exists := errorMap[e.Field]; !exists {
+			errorMap[e.Field] = e.Message
+		}
+	}
+	form.errors = errorMap
 
 	return errors
 }

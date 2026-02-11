@@ -26,16 +26,22 @@ type Field struct {
 	Disabled     bool
 	TableOptions TableOptions
 	// BlockEditorOptions BlockEditorOptions
-	Placeholder string
-	Invisible   bool
-	CustomInput hb.TagInterface
-	Attrs       map[string]string
-	Multiple    bool
-	Validators  []Validator
-	theme       *Theme
+	Placeholder  string
+	Invisible    bool
+	CustomInput  hb.TagInterface
+	Attrs        map[string]string
+	Multiple     bool
+	Validators   []Validator
+	theme        *Theme
+	errorMessage string
 }
 
 var _ themeable = (*Field)(nil)
+var _ errorAware = (*Field)(nil)
+
+func (field *Field) setError(message string) {
+	field.errorMessage = message
+}
 
 func (field *Field) setTheme(theme *Theme) {
 	field.theme = theme
@@ -583,8 +589,26 @@ func (field *Field) BuildFormGroup(fileManagerURL string) *hb.Tag {
 		formGroup.Child(formGroupLabel)
 	}
 
-	formGroup.Child(field.fieldInput(fileManagerURL))
+	fieldInput := field.fieldInput(fileManagerURL)
+
+	// Add error class to input and render error message
+	if field.errorMessage != "" {
+		theme := field.getTheme()
+		if theme.ErrorInputClass != "" {
+			fieldInput.Class(theme.ErrorInputClass)
+		}
+	}
+
+	formGroup.Child(fieldInput)
 	formGroup.Child(hiddenInput)
+
+	if field.errorMessage != "" {
+		theme := field.getTheme()
+		if theme.ErrorClass != "" {
+			errorDiv := hb.NewDiv().Class(theme.ErrorClass).HTML(field.errorMessage)
+			formGroup.Child(errorDiv)
+		}
+	}
 
 	if !field.IsHidden() {
 		formGroupLabel.Attr("for", field.ID)
