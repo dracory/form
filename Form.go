@@ -75,6 +75,11 @@ type errorAware interface {
 	setError(message string)
 }
 
+// rowErrorAware is an optional interface for layout fields that distribute errors to children.
+type rowErrorAware interface {
+	setErrors(errors map[string]string)
+}
+
 // Build renders the form and all its fields into an hb.Tag HTML element.
 func (form *Form) Build() *hb.Tag {
 	tags := []hb.TagInterface{}
@@ -95,6 +100,9 @@ func (form *Form) Build() *hb.Tag {
 			if msg, exists := form.errors[field.GetName()]; exists {
 				ea.setError(msg)
 			}
+		}
+		if rea, ok := field.(rowErrorAware); ok && form.errors != nil {
+			rea.setErrors(form.errors)
 		}
 		tags = append(tags, field.BuildFormGroup(form.fileManagerURL))
 	}
