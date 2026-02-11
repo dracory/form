@@ -20,6 +20,7 @@ func NewField(opts FieldOptions) *Field {
 		Invisible:    opts.Invisible,
 		CustomInput:  opts.CustomInput,
 		Attrs:        opts.Attrs,
+		Multiple:     opts.Multiple,
 	}
 }
 
@@ -40,4 +41,5 @@ type FieldOptions struct {
 	Invisible    bool
 	CustomInput  hb.TagInterface
 	Attrs        map[string]string
+	Multiple     bool
 }

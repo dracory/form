@@ -29,6 +29,7 @@ type Field struct {
 	Invisible   bool
 	CustomInput hb.TagInterface
 	Attrs       map[string]string
+	Multiple    bool
 }
 
 // == INTERFACES ==============================================================
@@ -395,6 +396,10 @@ func (field *Field) fieldSelect() *hb.Tag {
 		Name(field.Name).
 		Class("form-select")
 
+	if field.Multiple {
+		input.Attr("multiple", "multiple")
+	}
+
 	for _, opt := range field.Options {
 		option := hb.NewOption().Value(opt.Key).HTML(opt.Value)
 		option.AttrIf(field.Value == opt.Key, "selected", "selected")
@@ -454,6 +459,60 @@ func (field *Field) fieldTable(fileManagerURL string) *hb.Tag {
 	}
 
 	return input
+}
+
+func (field *Field) fieldCheckbox() *hb.Tag {
+	wrapper := hb.NewDiv().Class("form-check")
+
+	input := hb.NewInput().
+		ID(field.ID).
+		Type(hb.TYPE_CHECKBOX).
+		Class("form-check-input").
+		Name(field.Name).
+		Value(lo.If(field.Value != "", field.Value).Else("1"))
+
+	if field.Value == "1" || field.Value == "true" || field.Value == "on" || field.Value == "yes" {
+		input.Attr("checked", "checked")
+	}
+
+	wrapper.Child(input)
+
+	return wrapper
+}
+
+func (field *Field) fieldRadio() *hb.Tag {
+	wrapper := hb.NewDiv()
+
+	for _, opt := range field.Options {
+		radioDiv := hb.NewDiv().Class("form-check")
+
+		radioInput := hb.NewInput().
+			Type(hb.TYPE_RADIO).
+			Class("form-check-input").
+			Name(field.Name).
+			Value(opt.Key)
+
+		if field.Value == opt.Key {
+			radioInput.Attr("checked", "checked")
+		}
+
+		radioLabel := hb.NewLabel().
+			Class("form-check-label").
+			HTML(opt.Value)
+
+		radioDiv.Child(radioInput).Child(radioLabel)
+		wrapper.Child(radioDiv)
+	}
+
+	return wrapper
+}
+
+func (field *Field) fieldFile() *hb.Tag {
+	return hb.NewInput().
+		ID(field.ID).
+		Type(hb.TYPE_FILE).
+		Class("form-control").
+		Name(field.Name)
 }
 
 func (field *Field) fieldTextArea() *hb.Tag {
