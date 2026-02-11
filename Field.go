@@ -11,6 +11,7 @@ import (
 
 // == CLASS ===================================================================
 
+// Field represents a single form field with its configuration, value, and rendering options.
 type Field struct {
 	ID           string // automatic, if not assigned
 	Type         string
@@ -30,6 +31,7 @@ type Field struct {
 	CustomInput hb.TagInterface
 	Attrs       map[string]string
 	Multiple    bool
+	Validators  []Validator
 }
 
 // == INTERFACES ==============================================================
@@ -110,10 +112,13 @@ func (field *Field) SetValue(fieldValue string) {
 	field.Value = fieldValue
 }
 
+// TableColumn represents a column header in a table field.
 type TableColumn struct {
 	Label string
 	Width int
 }
+
+// TableOptions configures the layout and behavior of a table field.
 type TableOptions struct {
 	Header          []TableColumn
 	Rows            [][]Field

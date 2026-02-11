@@ -21,6 +21,7 @@ func NewField(opts FieldOptions) *Field {
 		CustomInput:  opts.CustomInput,
 		Attrs:        opts.Attrs,
 		Multiple:     opts.Multiple,
+		Validators:   opts.Validators,
 	}
 }
 
@@ -42,4 +43,5 @@ type FieldOptions struct {
 	CustomInput  hb.TagInterface
 	Attrs        map[string]string
 	Multiple     bool
+	Validators   []Validator
 }
